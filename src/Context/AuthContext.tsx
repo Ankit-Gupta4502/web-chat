@@ -79,13 +79,15 @@ const AuthContext = ({ children }: { children: React.ReactNode }) => {
   const query = useQueryClient();
 
   useEffect(() => {
-    const socket = io("http://localhost:8080/");
-    const peer = new Peer();
-    setMyPeer(peer);
-    setSocket(socket);
-    peer.on("open", (id) => {
-      setPeerId(id);
-    });
+    if (typeof window !== "undefined") {
+      const socket = io("http://localhost:8080/");
+      const peer = new Peer();
+      setMyPeer(peer);
+      setSocket(socket);
+      peer.on("open", (id) => {
+        setPeerId(id);
+      });
+    }
   }, []);
   useEffect(() => {
     if (Object.keys(socket).length) {
@@ -101,7 +103,6 @@ const AuthContext = ({ children }: { children: React.ReactNode }) => {
         });
         socket.emit("join", roomName);
       });
-
       socket.on(
         "incoming:videocall",
         ({ roomName, id }: { roomName: string; id: string }) => {
@@ -111,7 +112,6 @@ const AuthContext = ({ children }: { children: React.ReactNode }) => {
             .then((stream) => {
               const call = myPeer.call(id, stream);
               call.on("stream", (userStream) => {
-                console.log("stream received", userStream);
                 setPeerVideos((prev) => [...prev, userStream]);
               });
               setMediaStream(stream);
@@ -120,7 +120,6 @@ const AuthContext = ({ children }: { children: React.ReactNode }) => {
         }
       );
     }
-    return () => {};
   }, [user, socket, query, mediaStream, myPeer]);
 
   useEffect(() => {

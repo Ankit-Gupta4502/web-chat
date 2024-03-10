@@ -98,7 +98,7 @@ const ChatInterface = () => {
 
       <main
         ref={mainElm}
-        className="relative   space-y-4 flex py-6 px-4 flex-col flex-1 overflow-y-scroll max-h-[600px]"
+        className="relative    space-y-4 flex pt-6 pb-24 px-4 flex-col flex-1 overflow-y-scroll max-h-[600px]"
       >
         {activeChat.map((chat) => {
           return (
